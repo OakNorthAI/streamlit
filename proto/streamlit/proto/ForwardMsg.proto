@@ -72,6 +72,9 @@ message ForwardMsg {
     // for this one. If the client does not have the referenced message
     // in its cache, it can retrieve it from the server.
     string ref_hash = 11;
+
+    // new url to be set
+    string new_url = 12;
   }
 }
 
