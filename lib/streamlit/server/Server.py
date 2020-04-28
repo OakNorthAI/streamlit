@@ -656,6 +656,9 @@ class _BrowserWebSocketHandler(tornado.websocket.WebSocketHandler):
                         "Client tried to close connection when "
                         "not in development mode"
                     )
+            elif msg_type == "url_info":
+                self._session.base_url = msg.url_info
+                LOGGER.debug("Successfully set current URL :\n%s", msg.url_info)
             else:
                 LOGGER.warning('No handler for "%s"', msg_type)
 

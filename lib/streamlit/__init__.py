@@ -58,11 +58,12 @@ import uuid as _uuid
 import subprocess
 import platform
 import os
+import time
 from typing import Any, List, Tuple, Type
 
 # This used to be pkg_resources.require('streamlit') but it would cause
 # pex files to fail. See #394 for more details.
-__version__ = _pkg_resources.get_distribution("streamlit").version
+__version__ = _pkg_resources.get_distribution("streamlit-base").version
 
 # Deterministic Unique Streamlit User ID
 if (
@@ -103,6 +104,8 @@ from streamlit.DeltaGenerator import DeltaGenerator as _DeltaGenerator
 from streamlit.ReportThread import add_report_ctx as _add_report_ctx
 from streamlit.ReportThread import get_report_ctx as _get_report_ctx
 from streamlit.errors import StreamlitAPIException
+from streamlit.server.Server import Server
+from streamlit.proto.ForwardMsg_pb2 import ForwardMsg
 from streamlit.proto import BlockPath_pb2 as _BlockPath_pb2
 from streamlit.util import functools_wraps as _functools_wraps
 
@@ -586,6 +589,49 @@ def echo(code_location="above"):
 
     except FileNotFoundError as err:
         show_warning("Unable to display code. %s" % err)
+
+
+def get_url():
+    """
+    this should just return the url that the current session is running on
+    """
+    ctx = _get_report_ctx()
+    session_infos = Server.get_current()._session_info_by_id
+    _MAX_RETRIES = 4
+    _RETRY_WAIT_SECS = 1
+    for socket_handler, session_info in session_infos.items():
+        if session_info.session.enqueue == ctx.enqueue:
+            session = session_info.session
+            # Add retry in case query string message are not processed
+            for i in range(_MAX_RETRIES):
+                try:
+                    if not hasattr(session, "base_url") or session.base_url is None:
+                        raise StreamlitAPIException(
+                            "Error reading the current app state from the browser. Please try again."
+                        )
+                    else:
+                        return session.base_url
+                except StreamlitAPIException as e:
+                    if i >= _MAX_RETRIES - 1:
+                        session.handle_rerun_script_request()
+                        if not hasattr(session, "base_url") and session.base_url is not None:
+                            return session.base_url
+                        raise e
+                    time.sleep(_RETRY_WAIT_SECS)
+
+
+def set_url(url_to_set):
+    """
+    this should just append/replace url_to_set to the current session's existing hostname.
+    """
+    ctx = _get_report_ctx()
+    session_infos = Server.get_current()._session_info_by_id
+    for socket_handler, session_info in session_infos.items():
+        if session_info.session.enqueue == ctx.enqueue:
+            session = session_info.session
+            newUrlMsg = ForwardMsg()
+            newUrlMsg.new_url = url_to_set
+            session._report.enqueue(newUrlMsg)
 
 
 def _transparent_write(*args):
