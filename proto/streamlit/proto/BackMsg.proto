@@ -49,5 +49,8 @@ message BackMsg {
 
     // Set to true to ask the server to close the connection
     bool close_connection = 10;
+
+    // Request to send current URL to backend
+    string url_info = 11;
   }
 }
