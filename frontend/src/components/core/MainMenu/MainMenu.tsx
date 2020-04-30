@@ -24,13 +24,7 @@ import {
 } from "reactstrap"
 import Icon from "components/shared/Icon"
 
-import ScreencastOption from "./component/ScreencastOption"
 import "./MainMenu.scss"
-
-const ONLINE_DOCS_URL = "https://docs.streamlit.io"
-const COMMUNITY_URL = "https://discuss.streamlit.io"
-const TEAMS_URL = "https://streamlit.io/forteams"
-const BUG_URL = "https://github.com/streamlit/streamlit/issues/new/choose"
 
 interface Props {
   /** True if report sharing is properly configured and enabled. */
@@ -122,11 +116,6 @@ class MainMenu extends PureComponent<Props, State> {
 
           <DropdownItem divider />
 
-          <ScreencastOption
-            screenCastState={this.props.screenCastState}
-            onClick={this.props.screencastCallback}
-          />
-
           {/* We hide 'Share Report' + divider if sharing is not configured */}
           {this.props.sharingEnabled && (
             <DropdownItem
@@ -138,26 +127,6 @@ class MainMenu extends PureComponent<Props, State> {
           )}
 
           <DropdownItem divider />
-
-          <DropdownItem
-            onClick={this.getOpenInWindowCallback(ONLINE_DOCS_URL)}
-          >
-            Documentation
-          </DropdownItem>
-
-          <DropdownItem onClick={this.getOpenInWindowCallback(COMMUNITY_URL)}>
-            Ask a question
-          </DropdownItem>
-
-          <DropdownItem onClick={this.getOpenInWindowCallback(BUG_URL)}>
-            Report a bug
-          </DropdownItem>
-
-          <DropdownItem divider />
-
-          <DropdownItem onClick={this.getOpenInWindowCallback(TEAMS_URL)}>
-            Streamlit for teams
-          </DropdownItem>
 
           <DropdownItem onClick={this.props.settingsCallback}>
             Settings
