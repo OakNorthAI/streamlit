@@ -116,18 +116,6 @@ class MainMenu extends PureComponent<Props, State> {
 
           <DropdownItem divider />
 
-          {/* We hide 'Share Report' + divider if sharing is not configured */}
-          {this.props.sharingEnabled && (
-            <DropdownItem
-              disabled={isServerDisconnected}
-              onClick={this.props.shareCallback}
-            >
-              Save a snapshot
-            </DropdownItem>
-          )}
-
-          <DropdownItem divider />
-
           <DropdownItem onClick={this.props.settingsCallback}>
             Settings
           </DropdownItem>
