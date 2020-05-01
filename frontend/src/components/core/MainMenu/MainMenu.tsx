@@ -51,6 +51,9 @@ interface Props {
   /** Save the current widget states */
   saveCallback: () => void
 
+  /** Load the widget states from a file */
+  loadCallback: () => void
+
   /** Show the Settings dialog. */
   settingsCallback: () => void
 
@@ -125,6 +128,8 @@ class MainMenu extends PureComponent<Props, State> {
           <DropdownItem onClick={this.props.resetCallback}>Reset</DropdownItem>
 
           <DropdownItem onClick={this.props.saveCallback}>Save</DropdownItem>
+
+          <DropdownItem onClick={this.props.loadCallback}>Load</DropdownItem>
 
           <DropdownItem divider />
 

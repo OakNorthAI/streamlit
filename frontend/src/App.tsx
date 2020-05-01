@@ -839,10 +839,38 @@ export class App extends PureComponent<Props, State> {
   }
 
   saveCallback = (): void => {
-    this.saveToFile(
-      "This is my state",
-      `saveFile_${new Date().valueOf()}.streamnorth`
-    )
+    const currStates = this.widgetMgr.createWigetStatesMsg()
+    const jsonStr = JSON.stringify(currStates)
+    const bytes = new TextEncoder().encode(jsonStr)
+    const blob = new Blob([bytes], {
+      type: "application/json;charset=utf-8",
+    })
+    this.saveToFile(blob, `saveFile_${new Date().valueOf()}.streamnorth`)
+  }
+
+  loadCallback = (): void => {
+    let x = document.createElement("INPUT")
+    x.setAttribute("type", "file")
+    x.id = "file_upload_button"
+    x.style.display = "none"
+    document.body.appendChild(x)
+    x.addEventListener("change", this.readFileHandler, false)
+    x.click()
+  }
+
+  readFileHandler = (e: any) => {
+    const file = e.target.files[0]
+    if (!file) {
+      return
+    }
+    let reader = new FileReader()
+    reader.onload = function(e) {
+      if (e.target && e.target.result) {
+        const fileContent = e.target.result
+        alert(fileContent)
+      }
+    }
+    reader.readAsText(file)
   }
 
   saveToFile = (file_content: BlobPart, file_name: string) => {
@@ -904,6 +932,7 @@ export class App extends PureComponent<Props, State> {
                 settingsCallback={this.settingsCallback}
                 aboutCallback={this.aboutCallback}
                 saveCallback={this.saveCallback}
+                loadCallback={this.loadCallback}
                 resetCallback={this.resetCallback}
                 screencastCallback={this.screencastCallback}
                 screenCastState={this.props.screenCast.currentState}

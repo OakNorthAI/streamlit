@@ -194,7 +194,7 @@ export class WidgetStateManager {
     })
   }
 
-  private createWigetStatesMsg(): WidgetStates {
+  public createWigetStatesMsg(): WidgetStates {
     const msg = new WidgetStates()
     this.widgetStates.forEach(value => msg.widgets.push(value))
     return msg
