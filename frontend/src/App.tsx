@@ -838,6 +838,21 @@ export class App extends PureComponent<Props, State> {
     window.location.reload()
   }
 
+  saveCallback = (): void => {
+    this.saveToFile(
+      "This is my state",
+      `saveFile_${new Date().valueOf()}.streamnorth`
+    )
+  }
+
+  saveToFile = (file_content: BlobPart, file_name: string) => {
+    const saveAs = require("file-saver")
+    const savefile = new File([file_content], file_name, {
+      type: "text/plain;charset=utf-8",
+    })
+    saveAs(savefile)
+  }
+
   screencastCallback = (): void => {
     const { reportName } = this.state
     const { startRecording } = this.props.screenCast
@@ -888,6 +903,7 @@ export class App extends PureComponent<Props, State> {
                 clearCacheCallback={this.openClearCacheDialog}
                 settingsCallback={this.settingsCallback}
                 aboutCallback={this.aboutCallback}
+                saveCallback={this.saveCallback}
                 resetCallback={this.resetCallback}
                 screencastCallback={this.screencastCallback}
                 screenCastState={this.props.screenCast.currentState}
