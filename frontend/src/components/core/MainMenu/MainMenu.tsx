@@ -45,6 +45,9 @@ interface Props {
   /** Share the report to S3. */
   shareCallback: () => void
 
+  /** Reset the current window. */
+  resetCallback: () => void
+
   /** Show the Settings dialog. */
   settingsCallback: () => void
 
@@ -113,6 +116,10 @@ class MainMenu extends PureComponent<Props, State> {
             <span>Clear cache</span>
             <span className="shortcut">C</span>
           </DropdownItem>
+
+          <DropdownItem divider />
+
+          <DropdownItem onClick={this.props.resetCallback}>Reset</DropdownItem>
 
           <DropdownItem divider />
 

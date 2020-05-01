@@ -834,6 +834,10 @@ export class App extends PureComponent<Props, State> {
     this.openDialog(newDialog)
   }
 
+  resetCallback = (): void => {
+    window.location.reload()
+  }
+
   screencastCallback = (): void => {
     const { reportName } = this.state
     const { startRecording } = this.props.screenCast
@@ -884,6 +888,7 @@ export class App extends PureComponent<Props, State> {
                 clearCacheCallback={this.openClearCacheDialog}
                 settingsCallback={this.settingsCallback}
                 aboutCallback={this.aboutCallback}
+                resetCallback={this.resetCallback}
                 screencastCallback={this.screencastCallback}
                 screenCastState={this.props.screenCast.currentState}
               />
