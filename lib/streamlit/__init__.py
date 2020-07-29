@@ -685,29 +685,11 @@ def _maybe_print_repl_warning():
                 script_name,
             )
 
-def get_streamnorth_token():
-    """
-    return streamnorth token if present
-    else return None
-    """
-    PROXY_TOKEN = "X-Streamnorth-Proxy-Token"
-    session_infos = Server.get_current()._session_info_by_id
-    ctx = ReportThread.get_report_ctx()
-    for socket_handler, session_info in session_infos.items():
-        curr_session = session_info.session
-        if (
-            (hasattr(curr_session, '_main_dg') and curr_session._main_dg == ctx.main_dg)
-            # Streamlit < 0.54.0
-            or
-            # Streamlit >= 0.54.0
-            (not hasattr(curr_session, '_main_dg') and curr_session.enqueue == ctx.enqueue)
-        ):
-            session = session_info.session
-            handler = session_info.ws
-            break
+def get_headers():
+    session_id = _get_report_ctx().session_id
+    session_info = Server.get_current()._get_session_info(session_id)
+    if session_info:
+        return session_info.ws.request.headers
+    return None
 
-    if handler:
-        return handler.request.headers[PROXY_TOKEN]
-    else:
-        return None
     
